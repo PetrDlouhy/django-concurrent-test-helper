@@ -23,6 +23,13 @@ SUBPROCESS_TIMEOUT = int(os.environ.get('DJANGO_CONCURRENT_TESTS_TIMEOUT', '30')
 SubprocessRun = namedtuple('SubprocessRun', ['manager', 'result'])
 
 
+def prepend_str(prefix, s):
+    """
+    Prepend `prefix` to each line in `s`
+    """
+    return '\n'.join([prefix + line for line in s.splitlines()])
+
+
 class ProcessManager(object):
 
     def __init__(self, cmd):
@@ -72,7 +79,14 @@ class ProcessManager(object):
             thread.join()
 
         if self.stderr:
-            logger.error(self.stderr)
+            err_output = self.stderr.decode('utf-8')
+            err_output = prepend_str("> ", err_output)
+            err_output = (
+                "-------------Subprocess stderr output:\n" +
+                err_output +
+                "\n-------------End Subprocess stderr output"
+            )
+            logger.error(err_output)
 
         return self.stdout
 
