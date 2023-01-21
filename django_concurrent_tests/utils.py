@@ -128,6 +128,7 @@ def run_in_subprocess(f, **kwargs):
             )
         # deserialize the result from subprocess run
         # (any error raised when running the concurrent func will be stored in `result`)
+        result = result.split(b"|||")[-2]
         return SubprocessRun(
             manager=manager,
             result=b64pickle.loads(result) if result else None,

@@ -233,4 +233,6 @@ class Command(BaseCommand):
                 print(repr(e))
                 result = errors.WrappedError(e)
 
+        print("|||", end='')
         print(serialize(result), end='')
+        print("|||", end='')
